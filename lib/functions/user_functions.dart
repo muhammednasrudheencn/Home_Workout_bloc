@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:hive_flutter/adapters.dart';
 
 import '../model/user_data.dart';
@@ -6,6 +8,7 @@ class UserInfoData {
   Future<void> adddetails(Userinfo userdetail) async {
     final userdb = await Hive.openBox<Userinfo>('infodb');
     await userdb.add(userdetail);
+    log(userdb.length);
   }
 
   Future<Userinfo> getdetail() async {

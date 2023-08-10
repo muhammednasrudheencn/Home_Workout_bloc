@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:home_workout_bloc/bloc/userdet_bloc.dart';
@@ -5,7 +7,6 @@ import 'package:home_workout_bloc/screens/screen_infoedit.dart';
 
 import '../constants/const_color.dart';
 import '../functions/user_functions.dart';
-import '../model/user_data.dart';
 
 class Profilepage extends StatelessWidget {
   const Profilepage({super.key});
@@ -14,7 +15,7 @@ class Profilepage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var mediaquery = MediaQuery.of(context);
-    context.read<UserdetBloc>().add(GetUserDataEvent());
+
     UserInfoData userInfoData = UserInfoData();
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -231,25 +232,43 @@ class Profilepage extends StatelessWidget {
                         SizedBox(
                           height: mediaquery.size.height * 0.15,
                         ),
-                        ElevatedButton.icon(
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: background,
-                                shadowColor: Colors.white,
-                                elevation: 10,
-                                side: const BorderSide(
-                                    width: 0.1, color: Colors.white),
-                                fixedSize: Size(mediaquery.size.width * 0.40,
-                                    mediaquery.size.height * 0.06)),
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (ctx) => const Screeninfoedit()));
-                            },
-                            icon: const Icon(Icons.edit),
-                            label: const Text(
-                              'EDIT',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20),
-                            ))
+                        BlocBuilder<UserdetBloc, UserdetState>(
+                            builder: (context, state) {
+                          if (state is ProfileInitialState) {
+                            return ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: background,
+                                    shadowColor: Colors.white,
+                                    elevation: 10,
+                                    side: const BorderSide(
+                                        width: 0.1, color: Colors.white),
+                                    fixedSize: Size(
+                                        mediaquery.size.width * 0.40,
+                                        mediaquery.size.height * 0.06)),
+                                onPressed: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (ctx) => Screeninfoedit(
+                                            name: state.userinfo.name!,
+                                            weight: state.userinfo.weight
+                                                .toString(),
+                                            height: state.userinfo.height
+                                                .toString(),
+                                            age: state.userinfo.age.toString(),
+                                          )));
+                                },
+                                icon: const Icon(Icons.edit),
+                                label: const Text(
+                                  'EDIT',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20),
+                                ));
+                          } else {
+                            return const Center(
+                              child: Text('loading'),
+                            );
+                          }
+                        })
                       ],
                     ),
                   ),

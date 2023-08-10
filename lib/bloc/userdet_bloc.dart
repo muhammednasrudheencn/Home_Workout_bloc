@@ -35,14 +35,14 @@ class UserdetBloc extends Bloc<UserdetEvent, UserdetState> {
   FutureOr<void> updateuserdata(
       Updateuserdata event, Emitter<UserdetState> emit) async {
     UserInfoData userInfoData = UserInfoData();
+
     Userinfo userinfo = Userinfo(
         name: event.name,
         weight: event.weight,
         height: event.height,
         age: event.age);
-
     await userInfoData.editinfo(0, userinfo);
-    emit(UpdateDataState(getdata: userinfo));
+    super.add(InitialProfileevent());
   }
 
   FutureOr<void> initialProfileevent(
